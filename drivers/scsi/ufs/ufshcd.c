@@ -5021,8 +5021,38 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
 		hba->sdev_ufs_device = NULL;
 		spin_unlock_irqrestore(hba->host->host_lock, flags);
 	}
-
 	ufshcd_crypto_destroy_rq_keyslot_manager(hba, q);
+}
+
+/**
+ * ufshcd_task_req_compl - handle task management request completion
+ * @hba: per adapter instance
+ * @index: index of the completed request
+ * @resp: task management service response
+ *
+ * Returns non-zero value on error, zero on success
+ */
+static int ufshcd_task_req_compl(struct ufs_hba *hba, u32 index, u8 *resp)
+{
+	struct utp_task_req_desc *treq = hba->utmrdl_base_addr + index;
+	unsigned long flags;
+	int ocs_value;
+
+	spin_lock_irqsave(hba->host->host_lock, flags);
+
+	/* Clear completed tasks from outstanding_tasks */
+	__clear_bit(index, &hba->outstanding_tasks);
+
+	ocs_value = ufshcd_get_tmr_ocs(treq);
+
+	if (ocs_value != OCS_SUCCESS)
+		dev_err(hba->dev, "%s: failed, ocs = 0x%x\n",
+				__func__, ocs_value);
+	else if (resp)
+		*resp = be32_to_cpu(treq->output_param1) & MASK_TM_SERVICE_RESP;
+	spin_unlock_irqrestore(hba->host->host_lock, flags);
+
+	return ocs_value;
 }
 
 /**
@@ -6131,7 +6161,8 @@ out:
 static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
 		struct utp_task_req_desc *treq, u8 tm_function)
 {
-	struct Scsi_Host *host = hba->host;
+	struct utp_task_req_desc *treq;
+	struct Scsi_Host *host;
 	unsigned long flags;
 	int free_slot, task_tag, err;
 
@@ -6144,7 +6175,24 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
 	ufshcd_hold(hba, false);
 
 	spin_lock_irqsave(host->host_lock, flags);
+
+	treq = hba->utmrdl_base_addr + free_slot;
+
+	/* Configure task request descriptor */
+	treq->header.dword_0 = cpu_to_le32(UTP_REQ_DESC_INT_CMD);
+	treq->header.dword_2 = cpu_to_le32(OCS_INVALID_COMMAND_STATUS);
+
+	/* Configure task request UPIU */
 	task_tag = hba->nutrs + free_slot;
+	treq->req_header.dword_0 = UPIU_HEADER_DWORD(UPIU_TRANSACTION_TASK_REQ,
+			0, lun_id, task_tag);
+	treq->req_header.dword_1 = UPIU_HEADER_DWORD(0, tm_function, 0, 0);
+	/*
+	 * The host shall provide the same value for LUN field in the basic
+	 * header and for Input Parameter.
+	 */
+	treq->input_param1 = cpu_to_be32(lun_id);
+	treq->input_param2 = cpu_to_be32(task_id);
 
 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
 
