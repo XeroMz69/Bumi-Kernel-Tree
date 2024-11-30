@@ -1265,7 +1265,6 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
 	if (dsi->is_slave || dsi->slave_dsi)
 		width /= 2;
 
-<<<<<<< HEAD
 	if (dsc_params->enable == 0) {
 		ps_wc = width * dsi_buf_bpp;
 		SET_VAL_MASK(value, mask, ps_wc * line_back_to_LP, DSI_PS_WC);
@@ -1294,7 +1293,7 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
 		SET_VAL_MASK(value, mask, 5, DSI_PS_SEL);
 
 		size = (height << 16) + ((ps_wc + 2) / 3);
-=======
+
 	switch (dsi->format) {
 	case MIPI_DSI_FMT_RGB888:
 		ps_bpp_mode |= PACKED_PS_24BIT_RGB888;
@@ -1308,7 +1307,6 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
 	case MIPI_DSI_FMT_RGB565:
 		ps_bpp_mode |= PACKED_PS_16BIT_RGB565;
 		break;
->>>>>>> v4.19.311
 	}
 
 	writel(height / line_back_to_LP, dsi->regs + DSI_VACT_NL);
@@ -1369,9 +1367,8 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
 	writel(DSI_WMEM_CONTI, dsi->regs + DSI_MEM_CONTI);
 }
 
-<<<<<<< HEAD
 static void mtk_dsi_calc_vdo_timing(struct mtk_dsi *dsi)
-=======
+
 static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
 {
 	u32 dsi_tmp_buf_bpp;
@@ -1405,7 +1402,6 @@ static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
 }
 
 static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
->>>>>>> v4.19.311
 {
 	u32 horizontal_sync_active_byte;
 	u32 horizontal_backporch_byte;
