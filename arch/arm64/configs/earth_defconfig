@@ -1,5 +1,5 @@
 #C3T code for HQ-219004 by wangjian at 2022/08/11 start 
-CONFIG_LOCALVERSION=""
+CONFIG_LOCALVERSION="-perf"
 CONFIG_LOCALVERSION_AUTO=n
 #C3T code for HQ-219004 by wangjian at 2022/08/11 end 
 CONFIG_PREEMPT=y
