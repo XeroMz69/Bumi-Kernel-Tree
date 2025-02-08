@@ -17,12 +17,12 @@
 /**************************************************
  * MT6768/MT6767 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG_GPU_DVFS_FREQ0			(1000000)	/* KHz */
-#define SEG_GPU_DVFS_FREQ1			(975000)	/* KHz */
-#define SEG_GPU_DVFS_FREQ2			(950000)	/* KHz */
-#define SEG_GPU_DVFS_FREQ3			(925000)	/* KHz */
-#define SEG_GPU_DVFS_FREQ4			(900000)	/* KHz */
-#define SEG_GPU_DVFS_FREQ5			(875000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ0			(1150000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ1			(1100000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ2			(1000000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ3			(975000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ4			(950000)	/* KHz */
+#define SEG_GPU_DVFS_FREQ5			(900000)	/* KHz */
 #define SEG_GPU_DVFS_FREQ6			(850000)	/* KHz */
 #define SEG_GPU_DVFS_FREQ7			(823000)	/* KHz */
 #define SEG_GPU_DVFS_FREQ8			(796000)	/* KHz */
@@ -52,8 +52,8 @@
 
 #define SEG_GPU_DVFS_VOLT0		(95000)		/* mV x 100 */
 #define SEG_GPU_DVFS_VOLT1		(92500)		/* mV x 100 */
-#define SEG_GPU_DVFS_VOLT2		(90000)		/* mV x 100 */
-#define SEG_GPU_DVFS_VOLT3		(87500)		/* mV x 100 */
+#define SEG_GPU_DVFS_VOLT2		(91700)		/* mV x 100 */
+#define SEG_GPU_DVFS_VOLT3		(90000)		/* mV x 100 */
 #define SEG_GPU_DVFS_VOLT4		(85000)		/* mV x 100 */
 #define SEG_GPU_DVFS_VOLT5		(82500)		/* mV x 100 */
 #define SEG_GPU_DVFS_VOLT6		(80000)		/* mV x 100 */
