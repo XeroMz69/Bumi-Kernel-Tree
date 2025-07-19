@@ -1,0 +1,37 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Setup Environment
+    init: |
+      sudo apt update && sudo apt install -y \
+        bc bison build-essential ca-certificates cpio curl flex \
+        git libncurses-dev libssl-dev python3 unzip \
+        zstd libelf-dev
+      git config --global init.defaultBranch main
+
+  - name: Start Build
+    command: |
+      mkdir -p clang
+      git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
+      export PATH="$(pwd)/clang/bin:$PATH"
+
+      # Ganti path dan defconfig sesuai kernel kamu ya sayang
+      export ARCH=arm64
+      export SUBARCH=arm64
+      make O=out clean
+      make O=out ARCH=arm64 earth_defconfig
+      make -j$(nproc) O=out ARCH=arm64 \
+        CC=clang \
+        LD=ld.lld \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
+        LLVM=1 \
+        LLVM_IAS=1 \
+        LTO=full
+
+  - name: Done
+    command: echo "Build selesai sayang~ 💕 Silakan cek folder out/ untuk hasilnya."
